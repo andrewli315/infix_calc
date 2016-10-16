@@ -8,6 +8,7 @@ int op_stack[N];
 int n_top = 0;
 int op_top = -1;
 
+
 void n_push(int);
 int n_pop();
 char op_pop();
@@ -18,9 +19,9 @@ int isOp(char);
 void print();
 int main()
 {
-	char input[]="-5=\0";
-	char integer[N];
+	char input[]="-3=\0";
 	int i=0;
+	char integer[N];
 	char op;
 	int j=0;
 	int operand1,operand2;
@@ -36,19 +37,19 @@ int main()
 			printf("%c \n",integer[j]);
 			j++;
 		}
-		else if(isOp(input[i]) == 1 || input[i] == '=')
+		else if(isOp(input[i]) == 1 || input[i]=='=')
 		{
 			integer[j] = '\0';
 			n_push(atoi(integer));
 			j=0;
-
 			if(prior(input[i]) > prior(top()))
 			{
 				op_push(input[i]);
+			
 			}
 			else
-			{	
-				while(prior(input[i]) <= prior(top()) )
+			{
+				while(prior(input[i]) <= prior(top()))
 				{
 					operand2 = n_pop();
 					operand1 = n_pop();
@@ -73,7 +74,7 @@ int main()
 					n_push(result);
 				}
 				if(input[i]!='=')
-					op_push(input[i]);
+						op_push(input[i]);
 			}
 		}
 		i++;
@@ -94,7 +95,7 @@ int n_pop()
 {
 	if(n_top<0)
 	{
-		printf("%d :num index is out of range\n",n_top);
+		printf("index is out of range\n");
 		exit(-1);
 	}
 	else
@@ -134,9 +135,11 @@ int prior(char op)
 			break;
 		case '/':return 4;
 			break;
-		case '%':return 6;
+		case '%':return 4;
 			break;
 		case '#':return 0;
+			break;
+		case '=':return 1;
 			break;
 		default:return 0;
 			break;
@@ -163,11 +166,11 @@ void print()
 {
 	int i=0;
 	printf("num stack: ");
-	for(i=0;i<n_top;i++)
+	for(i=0;i<=n_top;i++)
 		printf("%d ",num_stack[i]);
 	printf("\n");
 	printf("opt stack: ");
-	for(i=0;i<op_top;i++)
+	for(i=0;i<=op_top;i++)
 		printf("%c ",op_stack[i]);
 	printf("\n");
 }
