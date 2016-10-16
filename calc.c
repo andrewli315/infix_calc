@@ -5,9 +5,8 @@
 
 int num_stack[N];
 int op_stack[N];
-int n_top = -1;
-int op_top = 0;
-
+int n_top = 0;
+int op_top = -1;
 
 void n_push(int);
 int n_pop();
@@ -19,14 +18,15 @@ int isOp(char);
 void print();
 int main()
 {
-	char input[]="16%3+3*2-5=\0";
-	int i=0;
+	char input[]="-5=\0";
 	char integer[N];
+	int i=0;
 	char op;
 	int j=0;
 	int operand1,operand2;
 	int result=0;
-	op_stack[0] = '#';
+	//op_stack[0] = '#';
+	op_push('#');
 	while(input[i]!='\0')
 	{
 		print();
@@ -34,43 +34,46 @@ int main()
 		{
 			integer[j]=input[i];
 			printf("%c \n",integer[j]);
-			i++;
 			j++;
-			continue;
 		}
-		else if(isOp(input[i]) == 1)
+		else if(isOp(input[i]) == 1 || input[i] == '=')
 		{
+			integer[j] = '\0';
 			n_push(atoi(integer));
 			j=0;
-			if(prior(input[i]) >= prior(top()))
+
+			if(prior(input[i]) > prior(top()))
 			{
 				op_push(input[i]);
-				i++;
 			}
-			else if(prior(input[i]) <= prior(top()) )
-			{
-				operand2 = n_pop();
-				operand1 = n_pop();
-				op = op_pop();
-				switch(op){
-					case '+':result = operand1+operand2;
-						printf("%d %c %d = %d \n",operand1,op,operand2,result);
-						break;
-					case '-':result = operand1-operand2;
-						printf("%d %c %d = %d \n",operand1,op,operand2,result);
-						break;
-					case '*':result = operand1*operand2;
-						printf("%d %c %d = %d \n",operand1,op,operand2,result);
-						break;
-					case '/':result = operand1/operand2;
-						printf("%d %c %d = %d \n",operand1,op,operand2,result);
-						break;
-					case '%':result = operand1%operand2;
-						printf("%d %c %d = %d \n",operand1,op,operand2,result);
-						break;
+			else
+			{	
+				while(prior(input[i]) <= prior(top()) )
+				{
+					operand2 = n_pop();
+					operand1 = n_pop();
+					op = op_pop();
+					switch(op){
+						case '+':result = operand1+operand2;
+							printf("%d %c %d = %d \n",operand1,op,operand2,result);
+							break;
+						case '-':result = operand1-operand2;
+							printf("%d %c %d = %d \n",operand1,op,operand2,result);
+							break;
+						case '*':result = operand1*operand2;
+							printf("%d %c %d = %d \n",operand1,op,operand2,result);
+							break;
+						case '/':result = operand1/operand2;
+							printf("%d %c %d = %d \n",operand1,op,operand2,result);
+							break;
+						case '%':result = operand1%operand2;
+							printf("%d %c %d = %d \n",operand1,op,operand2,result);
+							break;
+					}
+					n_push(result);
 				}
-				n_push(result);
-				continue;
+				if(input[i]!='=')
+					op_push(input[i]);
 			}
 		}
 		i++;
@@ -91,7 +94,7 @@ int n_pop()
 {
 	if(n_top<0)
 	{
-		printf("index is out of range\n");
+		printf("%d :num index is out of range\n",n_top);
 		exit(-1);
 	}
 	else
@@ -159,24 +162,12 @@ int isOp(char c)
 void print()
 {
 	int i=0;
-	for(i=0;i<10;i++)
+	printf("num stack: ");
+	for(i=0;i<n_top;i++)
 		printf("%d ",num_stack[i]);
 	printf("\n");
+	printf("opt stack: ");
+	for(i=0;i<op_top;i++)
+		printf("%c ",op_stack[i]);
+	printf("\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
